@@ -96,7 +96,11 @@ seq  name             file
 0    main             /Users/aleks/repos/afterburner/afterburner_english_to_ital
 2    anki_db          /Users/aleks/repos/afterburner/./assets/15000_Italian_sent
 
-## Looks good. However I now have a better idea:
+## Above this line, I just putz around but don't end up using any of this code
+############################################################################
+## Code that's actually useful is below this line
+
+## Suddently I have a better idea:
 
 ## I'll write a little Python program to load that media json file and reformat it into an easier-to-read .csv
 ## The python program is called convert_anki_to_sane_format.py
@@ -230,9 +234,77 @@ select * from afterburner_intermediate_table;
 ## Now go write our python file, which is called construct_afterburner_input_csv.py. It emits a csv to disk, which is called
 afterburner_inputs_english_to_italian_part_1.csv
 
-## Then I had to change the .mp3 files from mp3 to wavs:
+## Then I had to change the .mp3 files from mp3 to wavs: EDIT: JUST KIDDING, THIS IS NOW UNNECESSARY SINCE I TAUGHT PYTHON TO SPEAK MP3
 cd /Users/aleks/repos/afterburner/assets ## Make sure this contains nothing but the integer-numbered-mp3 files with no extension
 for i in *; do mpg321 -w "`basename "$i" .mp3`".wav "$i"; done
 ## this is from http://www.linuxquestions.org/questions/linux-software-2/using-mpg123-to-convert-mp3-to-wav-files-332570/
 ## However it crashes pyaudio with the following problem:
 ## wave.Error: unknown format: 65534
+
+## At this point I got it working. See below for just the necessary steps, without all the false leads up above.
+
+
+
+
+
+########################################################################################################################
+########################################################################################################################
+## Below this line, I extract the subset of lines from above which are actually necessary to solve the problem, and put
+## them in the right order
+
+## First, let's fix the janky delimiter problem
+## cd here to whatever directory you unzipped the anki card pack into
+sqlite3 collection.anki2 
+.mode csv 
+.headers on 
+.out text_and_filenames.tsv
+select replace(flds, char(31), char(09)) from notes;
+.quit
+
+## Remove the first line, which is unhelpful
+sed -i.bak '1d' text_and_filenames.tsv 
+
+## Reformat our text files slightly
+perl -pi.back -e 's/"//g;' text_and_filenames.tsv ## Remove quotes
+csvcut -t -c 1,2,3 text_and_filenames.tsv > short_text_and_filenames.csv ## Subset just the relevant columns
+csvformat -T short_text_and_filenames.csv > short_text_and_filenames.tsv ## Make it tab delimited again in case the phrase text includes quotes
+echo -e "long_filename\tidiomatic_translation_to_target_language\tphrase_in_known_language" > header_row.tsv ## Construct a header row
+cat header_row.tsv short_text_and_filenames.tsv > short_text_and_filenames_with_header.tsv ## Prepend that header row
+perl -pi.back -e 's/\[sound://g;' short_text_and_filenames_with_header.tsv ## Remove cruft
+perl -pi.back -e 's/\]//g;' short_text_and_filenames_with_header.tsv ## Remove more cruft
+
+## Now load our 3-column tsv *back* into sqlite
+csvsql -t --db "sqlite:///sandbox.db" --tables "text_and_long_filenames" --insert short_text_and_filenames_with_header.tsv
+
+## Run a little python program to reformat the .json file they've named "media"
+python convert_anki_to_sane_format.py
+
+## Now take the output of our little python program called convert_anki_to_sane_format.py from above, which output is called mp3_filename_map.csv, and load that into sqlite too.
+csvsql --db "sqlite:///sandbox.db" --tables "mp3_filename_map" --insert mp3_filename_map.csv
+
+## Let's join the two sqlite tables that we just created:
+sqlite3 sandbox.db
+drop table if exists afterburner_intermediate_table;
+create table afterburner_intermediate_table as
+select
+    map.phrase_uuid
+  , text.phrase_in_known_language
+  , text.idiomatic_translation_to_target_language
+from
+    mp3_filename_map as map
+  , text_and_long_filenames as text
+where
+    map.dirty_filename = text.long_filename
+;
+
+-- Now dump that table to file:
+.mode csv 
+.headers on 
+.out afterburner_intermediate_table.csv
+select * from afterburner_intermediate_table;
+.quit
+
+## Now exit sqlite go write our python file, which is called construct_afterburner_input_csv.py. It consumes this afterburner_intermediate_table.csv and emits a csv to disk, which is called
+## afterburner_inputs_english_to_italian_part_1.csv
+
+python construct_afterburner_input_csv.py ## You'll probably have to adjust some paths in this file
