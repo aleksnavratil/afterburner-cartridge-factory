@@ -1,0 +1,238 @@
+## In this file, we attempt to figure out what's going on with the Anki db format
+
+## First, let's peek in that db:
+$ sqlite3 collection.anki2
+
+sqlite> .tables
+cards   col     graves  notes   revlog
+
+sqlite> select * from notes limit 1;
+id             guid        mid            mod         usn         tags        flds                                                                                                                                                                                                                             sfld                                                          csum        flags       data      
+-------------  ----------  -------------  ----------  ----------  ----------  ---------------------------------------------------------------------------------------------                                                                                                                                    ------------------------------------------------------------  ----------  ----------  ----------
+1467063804697  Oh9H.&Rbe   1465843585372  1498310130  89                      [sound:youshouldtotallyreadRobertGreene__ita_long 00001.mp3]Non mi piace molto parlare di Tom.I don't really like to talk about Tom.[ 3 13 22 18 93 1 37 ][sound:sapi5com-daaa3e7e-f672a8f5-3f76a4a2-08ec33ac-7b63f00d.mp3]  [sound:youshouldtotallyreadRobertGreene__ita_long 00001.mp3]  3450569470  0                     
+
+
+select * from cards limit 1;
+id             nid            did            ord         mod         usn         type        queue       due         ivl         factor      reps        lapses      left        odue        odid        flags       data      
+-------------  -------------  -------------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+1467063809697  1467063804697  1467063787356  0           1498312186  -1          0           0           5001        0           2500        0           0           1001        0           0           0                     
+sqlite> 
+
+
+sqlite> select * from col limit 1;
+id          crt         mod            scm            ver         dty         usn         ls          conf                                                                                                                                                                                                                                                      models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      decks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      dconf                                                                                                                                                                                                                                                                                                                                                                                                                                                        tags      
+----------  ----------  -------------  -------------  ----------  ----------  ----------  ----------  ---------------------------------------------------------------------------------------------                                                                                                                                                             ---------------------------------------------------------------------------------------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ---------------------------------------------------------------------------------------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ---------------------------------------------------------------------------------------------                                                                                                                                                                                                                                                                                                                                                                ----------
+1           1462262400  1498312186123  1498312185813  11          0           0           0           {"nextPos": 1, "estTimes": true, "activeDecks": [1], "sortType": "noteFld", "timeLim": 0, "sortBackwards": false, "addToCur": true, "curDeck": 1, "newBury": true, "newSpread": 0, "dueCounts": true, "curModel": "1498312185814", "collapseTime": 1200}  {"1465843585372": {"vers": [], "name": "hirasawa_yui", "tags": [], "did": 1467646528063, "usn": 0, "req": [[0, "all", [0]]], "flds": [{"name": "audio", "media": [], "sticky": false, "rtl": false, "ord": 0, "font": "Arial", "size": 20}, {"name": "sentence", "media": [], "sticky": false, "rtl": false, "ord": 1, "font": "Arial", "size": 20}, {"name": "english translation", "media": [], "sticky": false, "rtl": false, "ord": 2, "font": "Arial", "size": 20}, {"name": "frequency ranks", "media": [], "sticky": false, "rtl": false, "ord": 3, "font": "Arial", "size": 20}, {"name": "eng_audio", "media": [], "sticky": false, "rtl": false, "ord": 4, "font": "Arial", "size": 20}], "sortf": 0, "tmpls": [{"name": "Card 1", "qfmt": "{{audio}}", "did": null, "bafmt": "", "afmt": "<hr id=answer>\n\n{{sentence}}\n<br><br>\n{{english translation}}\n\n<br><br>\n{{frequency ranks}}", "ord": 0, "bqfmt": ""}], "mod": 1498243410, "latexPost": "\\end{document}", "type": 0, "id": "1465843585372", "css": ".card {\n font-family: arial;\n font-size: 20px;\n text-align: center;\n color: black;\n background-color: white;\n}\n", "latexPre": "\\documentclass[12pt]{article}\n\\special{papersize=3in,5in}\n\\usepackage[utf8]{inputenc}\n\\usepackage{amssymb,amsmath}\n\\pagestyle{empty}\n\\setlength{\\parindent}{0in}\n\\begin{document}\n"}}  {"1": {"desc": "", "name": "Default", "extendRev": 50, "usn": 0, "collapsed": false, "newToday": [0, 0], "timeToday": [0, 0], "dyn": 0, "extendNew": 10, "conf": 1, "revToday": [0, 0], "lrnToday": [0, 0], "id": 1, "mod": 1498312184}, "1467063787356": {"desc": "Please see the <a href='https://ankiweb.net/shared/info/1590074519'>shared deck page</a> for more info.", "name": "italian 15 000 sentences easier to hardest pt1", "extendRev": 50, "usn": -1, "collapsed": false, "browserCollapsed": true, "newToday": [417, 0], "timeToday": [417, 0], "dyn": 0, "extendNew": 10, "conf": 1, "revToday": [417, 0], "lrnToday": [417, 0], "id": 1467063787356, "mod": 1498312186}}  {"1": {"name": "Default", "replayq": true, "lapse": {"leechFails": 8, "minInt": 1, "delays": [10], "leechAction": 0, "mult": 0}, "rev": {"perDay": 100, "fuzz": 0.05, "ivlFct": 1, "maxIvl": 36500, "ease4": 1.3, "bury": true, "minSpace": 1}, "timer": 0, "maxTaken": 60, "usn": 0, "new": {"perDay": 20, "delays": [1, 10], "separate": true, "ints": [1, 4, 7], "initialFactor": 2500, "bury": true, "order": 1}, "mod": 0, "id": 1, "autoplay": true}}  {}        
+
+CREATE TABLE notes (
+    id              integer primary key,   /* 0 */
+    guid            text not null,         /* 1 */
+    mid             integer not null,      /* 2 */
+    mod             integer not null,      /* 3 */
+    usn             integer not null,      /* 4 */
+    tags            text not null,         /* 5 */
+    flds            text not null,         /* 6 */
+    sfld            integer not null,      /* 7 */
+    csum            integer not null,      /* 8 */
+    flags           integer not null,      /* 9 */
+    data            text not null          /* 10 */
+);
+CREATE INDEX ix_notes_usn on notes (usn);
+CREATE INDEX ix_notes_csum on notes (csum);
+
+sqlite> select flds from notes limit 10;
+[sound:youshouldtotallyreadRobertGreene__ita_long 00001.mp3]Non mi piace molto parlare di Tom.I don't really like to talk about Tom.[ 3 13 22 18 93 1 37 ][sound:sapi5com-daaa3e7e-f672a8f5-3f76a4a2-08ec33ac-7b63f00d.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00002.mp3]Le ho detto di non andare.I told her not to go.[ 19 14 74 1 3 51 ][sound:sapi5com-87022756-54476ca7-044b763c-24e3f5e4-2e04d868.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00003.mp3]Non mi piace essere da solo.I dislike being alone.[ 3 13 22 33 16 76 ][sound:sapi5com-ee5c4c9c-37c35b8f-9b0b2a60-b444a4a1-29bddd78.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00004.mp3]Questa casa è mia, non sua.This house is mine, not yours.[ 55 59 1 29 3 36 ][sound:sapi5com-2ce1811d-51781a2b-1a458ff4-a7963d48-55fab6f9.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00005.mp3]Tom non ha molto tempo in più.Tom doesn't have much time left.[ 37 3 8 18 114 10 24 ][sound:sapi5com-7b426d52-cf195373-edc27708-807d76f8-b2c8be4a.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00006.mp3]Ho fatto come mi è stato detto.I did as I was told.[ 14 42 34 13 1 45 74 ][sound:sapi5com-7231fcd9-fb66603e-3a898bfd-f8892be9-4c8f3c51.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00007.mp3]Questo non è il mio libro.This is not my book.[ 46 3 1 6 23 113 ][sound:sapi5com-f68d3047-dd185565-d2bb4df7-b1156b99-32596f51.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00008.mp3]Mi piace essere da solo.I like being alone.[ 13 22 33 16 76 ][sound:sapi5com-c628386f-c507c8d3-e7bcec84-e1231ed9-be74333e.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00009.mp3]Quel che è fatto è fatto.What's done is done.[ 102 9 1 42 1 42 ][sound:sapi5com-3c6d763c-b31e79f6-1b24b751-19e1bd73-b633e770.mp3]
+[sound:youshouldtotallyreadRobertGreene__ita_long 00010.mp3]A me non era stato detto.I wasn't told that.[ 2 43 3 39 45 74 ][sound:sapi5com-d6565a3f-d0ce1fe2-44caf67e-c63bdfbb-88aec485.mp3]
+sqlite> 
+
+## What does robert greene have to do with this? No clue. But it looks like we just need the field called "flds" from the notes table. We'll have to write a parser for that somehow. 
+## Hopefully there is an invisible delimiter between the english and Italian. Let's dump a couple rows to file to check that:
+
+.mode csv 
+.headers on 
+.out investigating_delimiters.csv
+select flds from notes limit 10;
+
+## Indeed there seem to be some exotic delimiters there, which less is rendering as "^_" and cat is not rendering at all. Also I notice the left mp3 seems to be italian and the right one seems to be English. For now we can discard the right ones.
+"[sound:youshouldtotallyreadRobertGreene__ita_long 00001.mp3]^_Non mi piace molto parlare di Tom.^_I don't really like to talk about Tom.^_[ 3 13 22 18 93 1 37 ]^_[sound:sapi5com-daaa3e7e-f672a8f5-3f76a4a2-08ec33ac-7b63f00d.mp3]"
+"[sound:youshouldtotallyreadRobertGreene__ita_long 00002.mp3]^_Le ho detto di non andare.^_I told her not to go.^_[ 19 14 74 1 3 51 ]^_[sound:sapi5com-87022756-54476ca7-044b763c-24e3f5e4-2e04d868.mp3]"
+
+## After a bit of googling, I found https://github.com/ankidroid/Anki-Android/wiki/Database-Structure from which it seems this might be the "0x1f" character.
+## Let's figure out how to grep or tr or perl for that:
+https://stackoverflow.com/questions/2124010/grep-regex-to-match-non-ascii-characters implies you can just stick it in a regex and perl will know what to do.
+## Let's try that:
+perl -i -pe 's/\0x1f/\t/g;' investigating_delimiters.csv
+
+## This doesn't work at all. Maybe sqlite can handle it for us with replace() and char()? 
+
+.mode csv 
+.headers on 
+.out investigating_delimiters.csv
+select replace(flds, char(31), char(09)) from notes limit 10;
+
+"[sound:youshouldtotallyreadRobertGreene__ita_long 00001.mp3]   Non mi piace molto parlare di Tom.      I don't really like to talk about Tom.  [ 3 13 22 18 93 1 37 ]  [sound:sapi5com-daaa3e7e-f672a8f5-3f76a4a2-08ec33ac-7b63f00d.mp3]"
+"[sound:youshouldtotallyreadRobertGreene__ita_long 00002.mp3]   Le ho detto di non andare.      I told her not to go.   [ 19 14 74 1 3 51 ]     [sound:sapi5com-87022756-54476ca7-044b763c-24e3f5e4-2e04d868.mp3]"
+
+## Beautiful. Works like a charm. 
+
+## It's also clear that we'll need to rename our media files, which currently have names like "1004" and "425." We can correct their names, presumably using the mapping in the .json file called "media" (it has no file extension currently). Or maybe we can go the other way --- instead of renaming the files, we can just use the existing integer filenames. I'll try to implement this with cross-database access in sqlite:
+
+(afterburner) MooseAir:afterburner aleks$ sqlite3 afterburner_english_to_italian.sqlite 
+attach './assets/15000_Italian_sentences_sorted_from_easy_to_hard__part1/collection.anki2' as anki_db;
+
+## Verify that it worked:
+
+sqlite> .databases
+seq  name             file                                                      
+---  ---------------  ----------------------------------------------------------
+0    main             /Users/aleks/repos/afterburner/afterburner_english_to_ital
+2    anki_db          /Users/aleks/repos/afterburner/./assets/15000_Italian_sent
+
+## Looks good. However I now have a better idea:
+
+## I'll write a little Python program to load that media json file and reformat it into an easier-to-read .csv
+## The python program is called convert_anki_to_sane_format.py
+
+## We can also remove our English audio files: 
+cd /Users/aleks/repos/afterburner/assets/15000_Italian_sentences_sorted_from_easy_to_hard__part1
+rm sapi*
+
+
+
+
+## First, dump our flds field from the notes db to file after replacing the janky delimiters with tabs:
+sqlite3 collection.anki2 
+.mode csv 
+.headers on 
+.out text_and_filenames.tsv
+select replace(flds, char(31), char(09)) from notes;
+
+## I removed the first line, which was gibberish or maybe a column header, by doing this:
+sed -i.bak '1d' text_and_filenames.tsv 
+
+## Now it looks like this:
+
+(afterburner) MooseAir:15000_Italian_sentences_sorted_from_easy_to_hard__part1 aleks$ head text_and_filenames.tsv | csvlook -t --no-header-row 
+
+| a                                                            | b                                  | c                                      | d                       | e                                                                 |
+| ------------------------------------------------------------ | ---------------------------------- | -------------------------------------- | ----------------------- | ----------------------------------------------------------------- |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00001.mp3] | Non mi piace molto parlare di Tom. | I don't really like to talk about Tom. | [ 3 13 22 18 93 1 37 ]  | [sound:sapi5com-daaa3e7e-f672a8f5-3f76a4a2-08ec33ac-7b63f00d.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00002.mp3] | Le ho detto di non andare.         | I told her not to go.                  | [ 19 14 74 1 3 51 ]     | [sound:sapi5com-87022756-54476ca7-044b763c-24e3f5e4-2e04d868.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00003.mp3] | Non mi piace essere da solo.       | I dislike being alone.                 | [ 3 13 22 33 16 76 ]    | [sound:sapi5com-ee5c4c9c-37c35b8f-9b0b2a60-b444a4a1-29bddd78.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00004.mp3] | Questa casa è mia, non sua.        | This house is mine, not yours.         | [ 55 59 1 29 3 36 ]     | [sound:sapi5com-2ce1811d-51781a2b-1a458ff4-a7963d48-55fab6f9.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00005.mp3] | Tom non ha molto tempo in più.     | Tom doesn't have much time left.       | [ 37 3 8 18 114 10 24 ] | [sound:sapi5com-7b426d52-cf195373-edc27708-807d76f8-b2c8be4a.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00006.mp3] | Ho fatto come mi è stato detto.    | I did as I was told.                   | [ 14 42 34 13 1 45 74 ] | [sound:sapi5com-7231fcd9-fb66603e-3a898bfd-f8892be9-4c8f3c51.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00007.mp3] | Questo non è il mio libro.         | This is not my book.                   | [ 46 3 1 6 23 113 ]     | [sound:sapi5com-f68d3047-dd185565-d2bb4df7-b1156b99-32596f51.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00008.mp3] | Mi piace essere da solo.           | I like being alone.                    | [ 13 22 33 16 76 ]      | [sound:sapi5com-c628386f-c507c8d3-e7bcec84-e1231ed9-be74333e.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00009.mp3] | Quel che è fatto è fatto.          | What's done is done.                   | [ 102 9 1 42 1 42 ]     | [sound:sapi5com-3c6d763c-b31e79f6-1b24b751-19e1bd73-b633e770.mp3] |
+| [sound:youshouldtotallyreadRobertGreene__ita_long 00010.mp3] | A me non era stato detto.          | I wasn't told that.                    | [ 2 43 3 39 45 74 ]     | [sound:sapi5com-d6565a3f-d0ce1fe2-44caf67e-c63bdfbb-88aec485.mp3] |
+
+## Let's take just the relevant 3 columns from that and put them in their own file. We'll also get rid of the square brackets and the "[sound:" parts
+perl -pi.back -e 's/"//g;' text_and_filenames.tsv ## Remove quotes
+csvcut -t -c 1,2,3 text_and_filenames.tsv > short_text_and_filenames.csv
+csvformat -T short_text_and_filenames.csv > short_text_and_filenames.tsv
+echo -e "long_filename\tidiomatic_translation_to_target_language\tphrase_in_known_language" > header_row.tsv
+cat header_row.tsv short_text_and_filenames.tsv > short_text_and_filenames_with_header.tsv
+perl -pi.back -e 's/\[sound://g;' short_text_and_filenames_with_header.tsv
+perl -pi.back -e 's/\]//g;' short_text_and_filenames_with_header.tsv
+
+## Now load our 3-column tsv *back* into sqlite
+
+csvsql -t --db "sqlite:///sandbox.db" --tables "text_and_long_filenames" --insert short_text_and_filenames_with_header.tsv
+
+## Decided to not do this w tabs, and to use commas as the delimiter instead
+# csvcut -t -c 1,2,3 text_and_filenames.tsv > short_text_and_filenames.csv
+# echo -e "long_filename,idiomatic_translation_to_target_language,phrase_in_known_language" > header_row.txt
+# cat header_row.txt short_text_and_filenames.csv > short_text_and_filenames.csv
+
+## Now take the output of our little python program called convert_anki_to_sane_format.py from above, which output is called mp3_filename_map.csv, and load that into sqlite too.
+csvsql --db "sqlite:///sandbox.db" --tables "mp3_filename_map" --insert mp3_filename_map.csv
+
+## Make sure that worked:
+sqlite> select * from mp3_filename_map limit 10;
+5988|sapi5com-3a27b35e-27f2c64a-ceb2c515-bf997821-6c10c339.mp3
+5989|youshouldtotallyreadRobertGreene__ita_long 00658.mp3
+5982|youshouldtotallyreadRobertGreene__ita_long 00852.mp3
+5983|youshouldtotallyreadRobertGreene__ita_long 04064.mp3
+
+## Looks good.
+
+## Now join the two tables to create a single useful table which maps English text, Italian text, and filenames in a transparent way.
+
+select
+    map.phrase_uuid
+  , text.phrase_in_known_language
+  , text.idiomatic_translation_to_target_language
+from
+    mp3_filename_map as map
+  , text_and_long_filenames as text
+where
+    map.dirty_filename = text.long_filename
+limit 10
+;
+5989|Mary hasn't eaten yet.|Mary non ha ancora mangiato.
+5982|Who lives in this house?|Chi abita in questa casa?
+5983|Don't hurt anybody.|Non fate del male a nessuno.
+5980|Bring your friends with you.|Porta i tuoi amici con te.
+5981|I'd never hurt you.|Non le farei mai del male.
+5986|Tom is playing with his son.|Tom sta giocando con suo figlio.
+5987|I don't feel like working.|Io non ho voglia di lavorare.
+5984|That has nothing to do with him.|Non ha niente a che fare con lui.
+5985|I tried not to look.|Ho provato a non guardare.
+6796|I'd like something to eat.|Vorrei qualcosa da mangiare.
+
+
+## This query works, so let's just package it up into the format expected by afterburner.
+
+## Note that afterburner expects it like this:
+(afterburner) MooseAir:afterburner aleks$ tabview phrases_english_to_italian.csv 
+
+phrase_uuid           lesson                phrase_in_known_lan…  literal_translation…  idiomatic_translati…  timestamp_when_phra…
+0                      0                     With my best friend   With the my best f…   Con la mia miglior…   -1
+1                      0                     On Thursday we're …   Thursday we go to …   Giovedi andiamo a …   -1
+2                      1                     This is lesson 1      Thursday we go to …   Giovedi andiamo a …   -1
+3                      1                     This is also lesso…   Thursday we go to …   Giovedi andiamo a …   -1
+
+## I'll write another Python program to do the packaging. Basically we'll create a table using the query above, then pull it into python and impose a lesson scheme on it. 
+## Basically this will just involve the first N phrases being in lesson 0, the next N phrases in lesson 1, etc. Then we'll try to do some naive machine translation to make the "literal translation" column, and emit the whole thing to .csv.
+## The point of the csv is for the data format to be transparent and easy to understand. That's why I'm not just doing it as a database. 
+## The python program here is called construct_afterburner_input_csv.py
+
+## First, let's make a table in the sandbox db using a query similar to the above:
+sqlite3 sandbox.db
+drop table if exists afterburner_intermediate_table;
+create table afterburner_intermediate_table as
+select
+    map.phrase_uuid
+  , text.phrase_in_known_language
+  , text.idiomatic_translation_to_target_language
+from
+    mp3_filename_map as map
+  , text_and_long_filenames as text
+where
+    map.dirty_filename = text.long_filename
+;
+
+## Now dump that table to file:
+.mode csv 
+.headers on 
+.out afterburner_intermediate_table.csv
+select * from afterburner_intermediate_table;
+
+## Now go write our python file, which is called construct_afterburner_input_csv.py. It emits a csv to disk, which is called
+afterburner_inputs_english_to_italian_part_1.csv
+
+## Then I had to change the .mp3 files from mp3 to wavs:
+cd /Users/aleks/repos/afterburner/assets ## Make sure this contains nothing but the integer-numbered-mp3 files with no extension
+for i in *; do mpg321 -w "`basename "$i" .mp3`".wav "$i"; done
+## this is from http://www.linuxquestions.org/questions/linux-software-2/using-mpg123-to-convert-mp3-to-wav-files-332570/
+## However it crashes pyaudio with the following problem:
+## wave.Error: unknown format: 65534
