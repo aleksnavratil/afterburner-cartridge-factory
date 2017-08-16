@@ -44,4 +44,7 @@ data['literal_translation_from_target_language_to_known_language'] = 'foobar' ##
 
 ## Now reorder the columns and dump to .csv:
 data = data[['phrase_uuid', 'lesson', 'phrase_in_known_language', 'literal_translation_from_target_language_to_known_language', 'idiomatic_translation_to_target_language', 'timestamp_when_phrase_is_due_for_study']]
-data.to_csv('/Users/aleks/repos/afterburner/assets/15000_Italian_sentences_sorted_from_easy_to_hard__part1/afterburner_inputs_english_to_italian_part_1.csv', encoding='utf-8')
+# data.to_csv('/Users/aleks/repos/afterburner/assets/15000_Italian_sentences_sorted_from_easy_to_hard__part1/afterburner_inputs_english_to_italian_part_1.csv', encoding='utf-8')
+conn = sqlite3.connect('afterburner_english_to_italian_1')
+data.to_sql('afterburner_english_to_italian_1', conn, if_exists = 'fail') ## We don't want to overwrite the user's progress
+
